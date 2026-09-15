@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daniel — Motion Graphics Designer, Video Editor & Graphic Designer</title>
+<meta name="description" content="Portfolio of Daniel — a motion graphics designer, video editor and graphic designer creating bold visual content and digital experiences.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   DANIEL — PORTFOLIO
+   Single-file site. Structure:
+   1. Custom properties / reset
+   2. Layout primitives
+   3. Header / nav
+   4. Hero
+   5. Featured Work (grid, filters, modal)
+   6. About
+   7. Services
+   8. Process
+   9. Contact
+   10. Footer
+   11. Admin panel (local project manager)
+   12. Responsive rules
+   ============================================================ */
+
+:root{
+  --black:#0a0a0a;
+  --black-soft:#121210;
+  --paper:#f3f1ea;
+  --paper-dim:#c9c7bd;
+  --green:#baff2b;
+  --green-dim:#8fd41f;
+  --line:rgba(243,241,234,0.14);
+  --line-strong:rgba(243,241,234,0.28);
+  --grey:#8d8c85;
+
+  --display:'Bricolage Grotesque', system-ui, sans-serif;
+  --body:'Inter', system-ui, sans-serif;
+
+  --edge: clamp(20px, 5vw, 64px);
+  --max: 1400px;
+
+  --ease: cubic-bezier(.16,.84,.32,1);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+}
+
+body{
+  margin:0;
+  background:var(--black);
+  color:var(--paper);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+img,video{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; cursor:pointer; }
+ul{ list-style:none; margin:0; padding:0; }
+h1,h2,h3,h4,p{ margin:0; }
+
+.wrap{ max-width:var(--max); margin:0 auto; padding-left:var(--edge); padding-right:var(--edge); }
+
+/* focus visibility — accessibility floor */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
+  outline:2px solid var(--green);
+  outline-offset:3px;
+}
+
+.skip-link{
+  position:absolute; left:-999px; top:0; background:var(--green); color:var(--black);
+  padding:12px 18px; z-index:999; font-weight:600;
+}
+.skip-link:focus{ left:var(--edge); top:var(--edge); }
+
+/* ---------- section rhythm ---------- */
+section{ position:relative; }
+.section-pad{ padding-top: clamp(72px,11vw,140px); padding-bottom: clamp(72px,11vw,140px); }
+
+.eyebrow{
+  font-family:var(--body);
+  font-size:13px;
+  color:var(--grey);
+  letter-spacing:0.02em;
+}
+
+.section-head{
+  display:flex; justify-content:space-between; align-items:flex-end; gap:32px;
+  margin-bottom: clamp(36px,6vw,72px);
+  border-bottom:1px solid var(--line);
+  padding-bottom: 28px;
+}
+.section-head h2{
+  font-family:var(--display);
+  font-weight:700;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height:1.02;
+  letter-spacing:-0.01em;
+}
+.section-head .section-note{
+  max-width:340px;
+  color:var(--paper-dim);
+  font-size:15px;
+  padding-bottom:8px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header{
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  background:linear-gradient(to bottom, rgba(10,10,10,0.92), rgba(10,10,10,0));
+  padding-top:22px; padding-bottom:22px;
+  backdrop-filter:blur(2px);
+}
+header .wrap{ display:flex; align-items:center; justify-content:space-between; }
+
+.logo{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:20px;
+  letter-spacing:-0.01em;
+}
+.logo span{ color:var(--green); }
+
+nav.primary-nav ul{ display:flex; gap:34px; }
+nav.primary-nav a{
+  font-size:14px; color:var(--paper-dim); position:relative; padding-bottom:2px;
+}
+nav.primary-nav a:hover{ color:var(--paper); }
+nav.primary-nav a::after{
+  content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px; background:var(--green);
+  transition:width .35s var(--ease);
+}
+nav.primary-nav a:hover::after{ width:100%; }
+
+.nav-cta{
+  border:1px solid var(--line-strong);
+  padding:9px 18px;
+  border-radius:100px;
+  font-size:13px;
+  transition:border-color .25s, background .25s, color .25s;
+}
+.nav-cta:hover{ background:var(--green); border-color:var(--green); color:var(--black); }
+
+.nav-toggle{
+  display:none;
+  background:none;
+  border:none;
+  padding:0;
+  color:var(--paper);
+  width:36px;
+  height:36px;
+  position:relative;
+  z-index:300;
+  cursor:pointer;
+}
+.nav-toggle .bar{
+  position:absolute; left:0; width:100%; height:2px; border-radius:2px; background:var(--paper);
+  transform-origin:center;
+  transition:transform .32s var(--ease), opacity .32s var(--ease);
+}
+.nav-toggle .bar1{ top:6px; }
+.nav-toggle .bar2{ top:13px; }
+.nav-toggle .bar3{ top:20px; }
+.nav-toggle[aria-expanded="true"] .bar1{
+  transform:translateY(7px) rotate(45deg);
+}
+.nav-toggle[aria-expanded="true"] .bar2{
+  opacity:0;
+  transform:scaleX(0);
+}
+.nav-toggle[aria-expanded="true"] .bar3{
+  transform:translateY(-7px) rotate(-45deg);
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  min-height:100vh;
+  display:flex; flex-direction:column; justify-content:center;
+  padding-top:140px; padding-bottom:80px;
+  position:relative;
+}
+.hero-grain{
+  position:absolute; inset:0; pointer-events:none; opacity:0.5; mix-blend-mode:overlay;
+  background-image:radial-gradient(circle at 20% 20%, rgba(186,255,43,0.06), transparent 45%),
+                    radial-gradient(circle at 85% 70%, rgba(243,241,234,0.05), transparent 40%);
+}
+
+.hero-kicker{
+  display:flex; align-items:center; gap:12px;
+  font-size:13px; color:var(--grey);
+  margin-bottom:26px;
+  opacity:0; transform:translateY(10px);
+}
+.hero-kicker .dot{ width:7px; height:7px; border-radius:50%; background:var(--green); }
+
+.hero h1{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(58px, 12vw, 168px);
+  line-height:0.88;
+  letter-spacing:-0.02em;
+  overflow:hidden;
+}
+.hero h1 .line{ display:block; overflow:hidden; }
+.hero h1 .line span{ display:block; transform:translateY(110%); }
+
+.hero-role{
+  margin-top:22px;
+  font-family:var(--body);
+  font-weight:500;
+  font-size:clamp(15px,2vw,20px);
+  color:var(--paper-dim);
+  max-width:640px;
+  opacity:0; transform:translateY(10px);
+}
+.hero-role b{ color:var(--paper); font-weight:600; }
+
+.hero-bottom{
+  margin-top:clamp(40px,7vw,76px);
+  display:flex; justify-content:space-between; align-items:flex-end; gap:32px; flex-wrap:wrap;
+  opacity:0; transform:translateY(10px);
+}
+
+.hero-intro{ max-width:420px; font-size:16px; color:var(--paper-dim); }
+
+.hero-actions{ display:flex; gap:14px; flex-wrap:wrap; }
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:15px 26px;
+  border-radius:100px;
+  font-size:14px; font-weight:600;
+  border:1px solid var(--line-strong);
+  transition:transform .3s var(--ease), background .3s, color .3s, border-color .3s;
+}
+.btn-solid{ background:var(--green); color:var(--black); border-color:var(--green); }
+.btn-solid:hover{ transform:translateY(-2px); background:var(--paper); border-color:var(--paper); }
+.btn-ghost:hover{ transform:translateY(-2px); border-color:var(--paper); }
+
+.hero-social{ display:flex; gap:18px; }
+.hero-social a{ font-size:13px; color:var(--grey); border-bottom:1px solid transparent; }
+.hero-social a:hover{ color:var(--paper); border-color:var(--green); }
+@keyframes rise{ to{ opacity:1; transform:translateY(0); } }
+
+/* ============================================================
+   FEATURED WORK
+   ============================================================ */
+.filters{
+  display:flex; gap:10px; flex-wrap:wrap;
+}
+.filter-btn{
+  background:transparent; border:1px solid var(--line-strong); color:var(--paper-dim);
+  padding:9px 18px; border-radius:100px; font-size:13px;
+  transition:all .25s var(--ease);
+}
+.filter-btn:hover{ border-color:var(--paper); color:var(--paper); }
+.filter-btn[aria-pressed="true"]{ background:var(--green); border-color:var(--green); color:var(--black); }
+
+.work-grid{
+  margin-top:44px;
+  display:grid;
+  grid-template-columns:repeat(12, 1fr);
+  gap:22px;
+}
+.project-card{
+  grid-column:span 6;
+  position:relative;
+  border:1px solid var(--line);
+  border-radius:6px;
+  overflow:hidden;
+  background:var(--black-soft);
+  cursor:pointer;
+  transition:border-color .3s var(--ease), transform .35s var(--ease);
+  opacity:0; transform:translateY(24px);
+}
+.project-card.in{ opacity:1; transform:translateY(0); }
+.project-card:nth-child(3n+2){ grid-column:span 6; }
+.project-card:nth-child(5n){ grid-column: span 12; }
+.project-card:nth-child(5n) .thumb-wrap{ aspect-ratio:21/8; }
+
+.project-card:hover{ border-color:var(--line-strong); }
+
+.thumb-wrap{
+  position:relative; aspect-ratio:16/10; overflow:hidden; background:#1a1a16;
+}
+.thumb-wrap img{
+  width:100%; height:100%; object-fit:cover;
+  transition:transform .6s var(--ease), filter .5s;
+  filter:grayscale(45%) contrast(1.02);
+}
+.project-card:hover .thumb-wrap img{ transform:scale(1.045); filter:grayscale(0%); }
+
+.thumb-fallback{
+  position:absolute; inset:0; display:flex; align-items:flex-end; padding:22px;
+  font-family:var(--display); font-weight:700; font-size:clamp(20px,2.6vw,34px); line-height:1.05;
+}
+
+.play-badge{
+  position:absolute; top:16px; right:16px; width:40px; height:40px; border-radius:50%;
+  background:rgba(10,10,10,0.55); backdrop-filter:blur(6px);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transform:scale(.85); transition:opacity .3s, transform .3s;
+}
+.project-card:hover .play-badge{ opacity:1; transform:scale(1); }
+.play-badge svg{ width:14px; height:14px; fill:var(--paper); margin-left:2px; }
+
+.card-body{ padding:20px 22px 24px; display:flex; justify-content:space-between; gap:16px; align-items:flex-end; }
+.card-title{ font-family:var(--display); font-weight:600; font-size:19px; }
+.card-meta{ font-size:12.5px; color:var(--grey); margin-top:6px; }
+.card-arrow{
+  width:34px; height:34px; border-radius:50%; border:1px solid var(--line-strong);
+  display:flex; align-items:center; justify-content:center; flex:none;
+  transition:background .3s, border-color .3s, transform .3s var(--ease);
+}
+.project-card:hover .card-arrow{ background:var(--green); border-color:var(--green); transform:rotate(45deg); }
+.card-arrow svg{ width:13px; height:13px; stroke:var(--paper); }
+.project-card:hover .card-arrow svg{ stroke:var(--black); }
+
+.work-empty{
+  grid-column:1/-1; padding:60px 0; text-align:center; color:var(--grey); font-size:15px; display:none;
+}
+
+/* ---------- Project modal ---------- */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(8,8,7,0.85); backdrop-filter:blur(6px);
+  z-index:500; display:flex; align-items:flex-start; justify-content:center;
+  padding: min(6vh,60px) var(--edge) 60px;
+  opacity:0; visibility:hidden; transition:opacity .35s var(--ease);
+  overflow-y:auto;
+}
+.modal-overlay.open{ opacity:1; visibility:visible; }
+
+.modal{
+  background:var(--black-soft); border:1px solid var(--line-strong); border-radius:10px;
+  max-width:920px; width:100%;
+  transform:translateY(24px); transition:transform .4s var(--ease);
+  overflow:hidden;
+}
+.modal-overlay.open .modal{ transform:translateY(0); }
+
+.modal-media{ width:100%; aspect-ratio:16/9; background:#000; position:relative; }
+.modal-media img, .modal-media video{ width:100%; height:100%; object-fit:cover; }
+.modal-media .thumb-fallback{ position:absolute; inset:0; align-items:center; justify-content:center; text-align:center; padding:40px; }
+
+.modal-close{
+  position:absolute; top:16px; right:16px; z-index:5;
+  width:40px; height:40px; border-radius:50%; background:rgba(10,10,10,0.6);
+  border:1px solid var(--line-strong); color:var(--paper);
+  display:flex; align-items:center; justify-content:center; font-size:18px;
+}
+.modal-close:hover{ background:var(--green); color:var(--black); border-color:var(--green); }
+
+.modal-body{ padding:clamp(24px,4vw,48px); }
+.modal-cat{ font-size:12.5px; color:var(--green); letter-spacing:0.02em; }
+.modal-title{ font-family:var(--display); font-weight:700; font-size:clamp(26px,4vw,40px); margin-top:10px; letter-spacing:-0.01em; }
+.modal-desc{ margin-top:18px; color:var(--paper-dim); font-size:15.5px; max-width:640px; line-height:1.65; }
+
+.modal-grid{
+  margin-top:32px; padding-top:26px; border-top:1px solid var(--line);
+  display:grid; grid-template-columns:repeat(3,1fr); gap:24px;
+}
+.modal-grid dt{ font-size:12px; color:var(--grey); }
+.modal-grid dd{ margin:8px 0 0; font-size:14.5px; }
+.modal-grid .tool-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.tool-tag{ font-size:12px; border:1px solid var(--line-strong); border-radius:100px; padding:4px 10px; color:var(--paper-dim); }
+
+.modal-link{ margin-top:28px; display:inline-flex; }
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+.about-grid{
+  display:grid; grid-template-columns: 1.1fr 0.9fr; gap:clamp(32px,6vw,90px); align-items:start;
+}
+.about-lead{
+  font-family:var(--display); font-weight:600;
+  font-size:clamp(24px,3.2vw,38px); line-height:1.28; letter-spacing:-0.01em;
+}
+.about-lead .accent{ color:var(--green); }
+.about-side p{ color:var(--paper-dim); font-size:15.5px; line-height:1.7; }
+.about-side p + p{ margin-top:18px; }
+.about-facts{ margin-top:32px; display:flex; flex-direction:column; gap:14px; }
+.about-facts .fact{ display:flex; justify-content:space-between; border-top:1px solid var(--line); padding-top:12px; font-size:14px; }
+.about-facts .fact span:first-child{ color:var(--grey); }
+
+/* ============================================================
+   SERVICES
+   ============================================================ */
+.services-list{ border-top:1px solid var(--line); }
+.service-row{
+  display:grid; grid-template-columns: 90px 1fr auto; align-items:center; gap:24px;
+  padding:26px 0; border-bottom:1px solid var(--line);
+  transition:padding-left .35s var(--ease);
+}
+.service-row:hover{ padding-left:14px; }
+.service-num{ font-family:var(--display); font-size:14px; color:var(--grey); }
+.service-name{ font-family:var(--display); font-weight:600; font-size:clamp(21px,3vw,32px); letter-spacing:-0.01em; }
+.service-desc{ display:none; }
+.service-row-arrow{ width:38px; height:38px; border-radius:50%; border:1px solid var(--line-strong); display:flex; align-items:center; justify-content:center; transition:transform .35s var(--ease), background .3s, border-color .3s; }
+.service-row:hover .service-row-arrow{ transform:rotate(45deg); background:var(--green); border-color:var(--green); }
+.service-row:hover .service-row-arrow svg{ stroke:var(--black); }
+.service-row-arrow svg{ width:13px; height:13px; stroke:var(--paper); }
+
+/* ============================================================
+   PROCESS
+   ============================================================ */
+.process-track{
+  display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--line);
+  border:1px solid var(--line); border-radius:8px; overflow:hidden;
+}
+.process-step{
+  background:var(--black); padding:32px 22px; min-height:240px;
+  display:flex; flex-direction:column; justify-content:space-between;
+  transition:background .35s var(--ease);
+}
+.process-step:hover{ background:var(--black-soft); }
+.process-step .p-num{ font-family:var(--display); font-size:13px; color:var(--green); }
+.process-step h3{ font-family:var(--display); font-weight:600; font-size:22px; margin-top:34px; }
+.process-step p{ margin-top:10px; font-size:13.5px; color:var(--grey); line-height:1.55; }
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact-inner{ display:grid; grid-template-columns:1.2fr 1fr; gap:clamp(32px,6vw,80px); align-items:end; }
+.contact-headline{ font-family:var(--display); font-weight:800; font-size:clamp(38px,6vw,84px); line-height:0.98; letter-spacing:-0.02em; }
+.contact-sub{ margin-top:18px; color:var(--paper-dim); font-size:17px; max-width:440px; }
+.contact-cta{ margin-top:36px; display:flex; gap:14px; flex-wrap:wrap; }
+
+.contact-channels{ display:flex; flex-direction:column; }
+.channel{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:18px 0; border-top:1px solid var(--line); font-size:14.5px;
+}
+.channel:last-child{ border-bottom:1px solid var(--line); }
+.channel span:first-child{ color:var(--grey); }
+.channel a{ display:flex; align-items:center; gap:8px; }
+.channel a:hover{ color:var(--green); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{ border-top:1px solid var(--line); padding:52px 0 40px; }
+.footer-top{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px; }
+.footer-brand{ font-family:var(--display); font-weight:700; font-size:22px; }
+.footer-role{ font-size:13px; color:var(--grey); margin-top:6px; }
+.footer-social{ display:flex; gap:18px; }
+.footer-social a{ font-size:13px; color:var(--paper-dim); }
+.footer-social a:hover{ color:var(--green); }
+.footer-bottom{ margin-top:38px; padding-top:20px; border-top:1px solid var(--line); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:12.5px; color:var(--grey); }
+.footer-bottom .admin-link{ color:var(--grey); border-bottom:1px dotted var(--grey); }
+.footer-bottom .admin-link:hover{ color:var(--green); border-color:var(--green); }
+
+/* ============================================================
+   ADMIN PANEL (local-only project manager)
+   ============================================================ */
+.admin-overlay{
+  position:fixed; inset:0; background:rgba(8,8,7,0.9); z-index:600;
+  display:flex; align-items:flex-start; justify-content:center;
+  padding:5vh var(--edge) 60px; overflow-y:auto;
+  opacity:0; visibility:hidden; transition:opacity .3s;
+}
+.admin-overlay.open{ opacity:1; visibility:visible; }
+.admin-panel{
+  background:var(--black-soft); border:1px solid var(--line-strong); border-radius:10px;
+  max-width:640px; width:100%; padding:clamp(24px,4vw,40px);
+}
+.admin-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+.admin-head h2{ font-family:var(--display); font-weight:700; font-size:26px; }
+.admin-note{ margin-top:8px; font-size:13.5px; color:var(--grey); line-height:1.6; max-width:480px; }
+.admin-form{ margin-top:28px; display:grid; gap:16px; }
+.admin-form label{ font-size:12.5px; color:var(--grey); display:block; margin-bottom:6px; }
+.admin-form input, .admin-form textarea, .admin-form select{
+  width:100%; background:var(--black); border:1px solid var(--line-strong); border-radius:6px;
+  color:var(--paper); padding:11px 13px; font-family:var(--body); font-size:14px;
+}
+.admin-form textarea{ resize:vertical; min-height:80px; }
+.admin-row2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.admin-actions{ display:flex; gap:12px; margin-top:8px; flex-wrap:wrap; }
+.admin-list{ margin-top:32px; border-top:1px solid var(--line); padding-top:20px; }
+.admin-list h3{ font-size:14px; color:var(--grey); font-weight:500; }
+.admin-item{ display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); font-size:13.5px; }
+.admin-item-actions{ display:flex; gap:10px; }
+.admin-item-actions button{ background:none; border:none; color:var(--grey); font-size:12.5px; }
+.admin-item-actions button:hover{ color:var(--green); }
+.admin-empty{ font-size:13px; color:var(--grey); padding:16px 0; }
+.btn-small{ padding:10px 18px; font-size:13px; border-radius:100px; border:1px solid var(--line-strong); background:transparent; color:var(--paper); }
+.btn-small:hover{ border-color:var(--paper); }
+.btn-small.primary{ background:var(--green); border-color:var(--green); color:var(--black); }
+
+.copy-box{ margin-top:14px; }
+.copy-box textarea{ font-family:'SFMono-Regular',Consolas,monospace; font-size:12px; min-height:160px; background:#000; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px){
+  nav.primary-nav{
+    position:fixed; inset:0 0 0 auto; width:min(78vw,340px); height:100vh;
+    background:var(--black-soft); border-left:1px solid var(--line);
+    transform:translateX(100%); transition:transform .4s var(--ease);
+    padding:110px 32px 40px; z-index:190;
+  }
+  nav.primary-nav.open{ transform:translateX(0); }
+  nav.primary-nav ul{ flex-direction:column; gap:22px; }
+  nav.primary-nav a{ font-size:20px; }
+  .nav-cta{ display:none; }
+  .nav-toggle{ display:block; }
+
+  .about-grid, .contact-inner{ grid-template-columns:1fr; }
+  .process-track{ grid-template-columns:1fr 1fr; }
+  .admin-row2{ grid-template-columns:1fr; }
+}
+
+@media (max-width: 680px){
+  .project-card, .project-card:nth-child(3n+2), .project-card:nth-child(5n){ grid-column:span 12; }
+  .project-card:nth-child(5n) .thumb-wrap{ aspect-ratio:16/10; }
+  .service-row{ grid-template-columns: 50px 1fr auto; }
+  .process-track{ grid-template-columns:1fr; }
+  .modal-grid{ grid-template-columns:1fr 1fr; }
+  .section-head{ flex-direction:column; align-items:flex-start; gap:14px; }
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header>
+  <div class="wrap">
+    <a href="#top" class="logo">Daniel<span>.</span></a>
+    <nav class="primary-nav" id="primaryNav" aria-label="Primary">
+      <ul>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <a href="#contact" class="nav-cta">Let's talk</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="primaryNav">
+      <span class="bar bar1"></span>
+      <span class="bar bar2"></span>
+      <span class="bar bar3"></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="hero" id="top">
+    <div class="hero-grain" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="hero-kicker" data-anim><span class="dot"></span>Available for freelance &amp; collaborations</p>
+      <h1>
+        <span class="line"><span>Daniel</span></span>
+      </h1>
+      <p class="hero-role" data-anim><b>Motion Graphics Designer</b> / <b>Video Editor</b> / <b>Graphic Designer</b></p>
+      <div class="hero-bottom" data-anim>
+        <p class="hero-intro">I create bold visual content, motion graphics and digital experiences that help ideas stand out.</p>
+        <div class="hero-actions">
+          <a href="#work" class="btn btn-solid">View My Work</a>
+          <a href="#contact" class="btn btn-ghost">Let's Work Together</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FEATURED WORK
+       ============================================================ -->
+  <section class="section-pad" id="work">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Featured&nbsp;Work</h2>
+        <p class="section-note">A collection of motion, edit and design projects — select a category to filter.</p>
+      </div>
+
+      <div class="filters" id="filterBar" role="group" aria-label="Filter projects by category">
+        <button class="filter-btn" data-filter="All" aria-pressed="true">All</button>
+        <button class="filter-btn" data-filter="Motion Graphics" aria-pressed="false">Motion Graphics</button>
+        <button class="filter-btn" data-filter="Video Editing" aria-pressed="false">Video Editing</button>
+        <button class="filter-btn" data-filter="Graphic Design" aria-pressed="false">Graphic Design</button>
+      </div>
+
+      <div class="work-grid" id="workGrid" aria-live="polite">
+        <!-- Project cards are rendered here by script.js -->
+        <p class="work-empty" id="workEmpty">No projects in this category yet.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ABOUT
+       ============================================================ -->
+  <section class="section-pad" id="about">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>About</h2>
+      </div>
+      <div class="about-grid">
+        <p class="about-lead">I'm Daniel, a creative designer working across <span class="accent">motion graphics</span>, video editing and graphic design — I like taking a rough idea and giving it rhythm, texture and a reason to be watched.</p>
+        <div class="about-side">
+          <p>My work sits at the intersection of movement and message: title sequences, promo edits, social cutdowns and the static design systems that hold a brand together in between.</p>
+          <p>I care about pacing, clarity and craft over trends — a project is done when it feels inevitable, not just finished.</p>
+          <div class="about-facts">
+            <div class="fact"><span>Based in</span><span>Available worldwide, remote</span></div>
+            <div class="fact"><span>Focus</span><span>Motion · Edit · Design</span></div>
+            <div class="fact"><span>Status</span><span>Open for new projects</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SERVICES
+       ============================================================ -->
+  <section class="section-pad" id="services">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Services</h2>
+        <p class="section-note">What I can take off your plate, from concept to final export.</p>
+      </div>
+      <div class="services-list">
+        <div class="service-row">
+          <span class="service-num">01</span>
+          <span class="service-name">Motion Graphics</span>
+          <span class="service-row-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M5 19L19 5M19 5H8M19 5V16"/></svg></span>
+        </div>
+        <div class="service-row">
+          <span class="service-num">02</span>
+          <span class="service-name">Video Editing</span>
+          <span class="service-row-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M5 19L19 5M19 5H8M19 5V16"/></svg></span>
+        </div>
+        <div class="service-row">
+          <span class="service-num">03</span>
+          <span class="service-name">Graphic Design</span>
+          <span class="service-row-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M5 19L19 5M19 5H8M19 5V16"/></svg></span>
+        </div>
+        <div class="service-row">
+          <span class="service-num">04</span>
+          <span class="service-name">Social Media Ads</span>
+          <span class="service-row-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M5 19L19 5M19 5H8M19 5V16"/></svg></span>
+        </div>
+        <div class="service-row">
+          <span class="service-num">05</span>
+          <span class="service-name">Promotional Videos</span>
+          <span class="service-row-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M5 19L19 5M19 5H8M19 5V16"/></svg></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PROCESS
+       ============================================================ -->
+  <section class="section-pad" id="process">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Process</h2>
+        <p class="section-note">Same five steps on every project, adjusted to what it actually needs.</p>
+      </div>
+      <div class="process-track">
+        <div class="process-step">
+          <span class="p-num">01</span>
+          <div><h3>Discover</h3><p>Understand the goal, audience and where this will be seen.</p></div>
+        </div>
+        <div class="process-step">
+          <span class="p-num">02</span>
+          <div><h3>Concept</h3><p>Rough direction, references and a plan for tone and pacing.</p></div>
+        </div>
+        <div class="process-step">
+          <span class="p-num">03</span>
+          <div><h3>Design</h3><p>Frames, layouts and visual language get locked in.</p></div>
+        </div>
+        <div class="process-step">
+          <span class="p-num">04</span>
+          <div><h3>Animate</h3><p>Motion, edit and sound come together into a full cut.</p></div>
+        </div>
+        <div class="process-step">
+          <span class="p-num">05</span>
+          <div><h3>Deliver</h3><p>Final export, formats and revisions until it's right.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTACT
+       ============================================================ -->
+  <section class="section-pad" id="contact">
+    <div class="wrap">
+      <div class="contact-inner">
+        <div>
+          <h2 class="contact-headline">Have a project<br>in mind?</h2>
+          <p class="contact-sub">Let's create something that gets attention.</p>
+          <div class="contact-cta">
+            <a href="mailto: danielebong180@gmail.com" class="btn btn-solid">Email Me</a>
+            <a href="https://wa.me/+2347078331319" target="_blank" rel="noopener" class="btn btn-ghost">WhatsApp</a>
+          </div>
+        </div>
+        <div class="contact-channels">
+          <div class="channel"><span>Email</span><a href="mailto: danielebong180@gmail.com">danielebong180@gmail.com</a></div>
+          <div class="channel"><span>WhatsApp</span><a href="https://wa.me/+2347078331319" target="_blank" rel="noopener">Message on WhatsApp</a></div>
+          <div class="channel"><span>TikTok</span><a href="https://www.tiktok.com/@daniel_ebong" target="_blank" rel="noopener">@daniel_ebong</a></div>
+          <div class="channel"><span>X</span><a href="https://x.com/daniel_ebo84524" target="_blank" rel="noopener noreferrer">@danielebong</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">Daniel</div>
+        <div class="footer-role">Motion Graphics / Video Editing / Graphic Design</div>
+      </div>
+      <div class="footer-social">
+        <a href="https://www.tiktok.com/@daniel_ebong" target="_blank" rel="noopener noreferrer">Tiktok</a>
+        <a href="https://x.com/daniel_ebo84524" target="_blank" rel="noopener noreferrer">X</a>
+        <a href="mailto: danielebong180@gmail.com">Email</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Daniel. All rights reserved.</span>
+      <button class="admin-link" id="openAdmin" style="background:none;border:none;font-family:inherit;cursor:pointer; display: none;">Manage projects (local)</button>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     PROJECT DETAIL MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="projectModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-media" id="modalMedia">
+      <button class="modal-close" id="modalClose" aria-label="Close project details">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-cat" id="modalCat"></p>
+      <h3 class="modal-title" id="modalTitle"></h3>
+      <p class="modal-desc" id="modalDesc"></p>
+      <dl class="modal-grid">
+        <div><dt>My role</dt><dd id="modalRole"></dd></div>
+        <div><dt>Date</dt><dd id="modalDate"></dd></div>
+        <div><dt>Tools used</dt><div class="tool-tags" id="modalTools"></div></div>
+      </dl>
+      <a href="#" class="btn btn-ghost modal-link" id="modalLink" target="_blank" rel="noopener">View project</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     ADMIN PANEL — local "Add Project" tool
+     This is a convenience UI for drafting new project entries.
+     It saves to the browser's localStorage only (this device,
+     this browser). It is NOT a database and nothing here is
+     uploaded anywhere. Use "Copy as code" to move a project
+     into the permanent PROJECTS array in the script below.
+     ============================================================ -->
+<div class="admin-overlay" id="adminOverlay" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+  <div class="admin-panel">
+    <div class="admin-head">
+      <div>
+        <h2 id="adminTitle">Add a project</h2>
+        <p class="admin-note">This saves projects to this browser only (localStorage) so you can preview them on the live site instantly. It is not a real database — nothing is uploaded. When you're happy with a project, click <strong>“Copy as code”</strong> and paste it into the <code>PROJECTS</code> array in the script, then drop your image/video files into <code>assets/projects/</code>.</p>
+      </div>
+      <button class="modal-close" id="adminClose" aria-label="Close panel">✕</button>
+    </div>
+
+    <form class="admin-form" id="adminForm">
+      <div class="admin-row2">
+        <div>
+          <label for="f-title">Project title</label>
+          <input type="text" id="f-title" required placeholder="Audiomack Promo">
+        </div>
+        <div>
+          <label for="f-category">Category</label>
+          <select id="f-category" required>
+            <option value="Motion Graphics">Motion Graphics</option>
+            <option value="Video Editing">Video Editing</option>
+            <option value="Graphic Design">Graphic Design</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label for="f-desc">Description</label>
+        <textarea id="f-desc" required placeholder="What the project was and what you did"></textarea>
+      </div>
+
+      <div class="admin-row2">
+        <div>
+          <label for="f-thumb">Thumbnail path</label>
+          <input type="text" id="f-thumb" placeholder="assets/projects/audiomack.jpg">
+        </div>
+        <div>
+          <label for="f-video">Video path (optional)</label>
+          <input type="text" id="f-video" placeholder="assets/projects/audiomack.mp4">
+        </div>
+      </div>
+
+      <div class="admin-row2">
+        <div>
+          <label for="f-role">Your role</label>
+          <input type="text" id="f-role" placeholder="Motion Designer">
+        </div>
+        <div>
+          <label for="f-date">Date</label>
+          <input type="text" id="f-date" placeholder="2026">
+        </div>
+      </div>
+
+      <div class="admin-row2">
+        <div>
+          <label for="f-tools">Tools used (comma separated)</label>
+          <input type="text" id="f-tools" placeholder="Alight Motion, CapCut">
+        </div>
+        <div>
+          <label for="f-link">Project link (optional)</label>
+          <input type="text" id="f-link" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="admin-actions">
+        <button type="submit" class="btn-small primary">Save locally</button>
+        <button type="button" class="btn-small" id="clearForm">Clear form</button>
+      </div>
+    </form>
+
+    <div class="admin-list">
+      <h3>Locally-saved projects</h3>
+      <div id="adminList"></div>
+      <div class="copy-box" id="copyBox" style="display:none;">
+        <label for="copyArea">Paste this into the PROJECTS array in the script</label>
+        <textarea id="copyArea" readonly></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   DANIEL — PORTFOLIO SCRIPT
+   ------------------------------------------------------------
+   HOW TO ADD A PROJECT (permanent, ships with the site)
+   ------------------------------------------------------------
+   1. Put your image and/or video file inside the assets/projects
+      folder next to this HTML file, e.g.
+        assets/projects/audiomack.jpg
+        assets/projects/audiomack.mp4
+   2. Copy one of the objects in the PROJECTS array below and
+      paste it as a new entry, then edit the fields.
+   3. Save the file and refresh the page — the new project
+      appears in the grid automatically, filterable by category.
+
+   Fields:
+   - title       (string)  Project name
+   - category    (string)  "Motion Graphics" | "Video Editing" | "Graphic Design"
+   - description (string)  1–3 sentences about the project
+   - thumbnail   (string)  path to a cover image
+   - video       (string|null) path to a video file, or null if none
+   - link        (string|null) external URL to view the project, or null
+   - tools       (array)   e.g. ["Alight Motion", "CapCut"]
+   - role        (string)  your role on the project
+   - date        (string)  e.g. "2026" or "Jan 2026"
+
+   The six projects below are SAMPLE entries so the layout has
+   real content to preview. Replace title/description/files with
+   your own work — delete the samples once your real projects
+   are in place.
+   ============================================================ */
+
+const PROJECTS = [
+  {
+    title: "Brand identity - Daniel",
+    category: "Motion Graphics",
+    description: "A dynamic kinetic typography and motion design concept exploring bold typography, smooth transitions, and modern visual composition. Created to showcase creative direction, timing, and motion design skills.",
+    thumbnail: "assets/projects/Brand_identity.png",
+    video: "assets/projects/Brand_identity.mp4",
+    link: null,
+    tools: ["Alight Motion", "Capcut"],
+    role: "Motion Designer",
+    date: "2026"
+  },
+  {
+    title: "Uber - Motion Ad Concept",
+    category: "Motion Graphics",
+    description: "A self-initiated motion design concept created as a practice project inspired by Uber’s visual identity. Focused on storytelling, typography, transitions, and creating a polished advertising experience.",
+    thumbnail: "assets/projects/Uber.png",
+    video: "assets/projects/Uber.mp4",
+    link: null,
+    tools: ["Alight Motion", "CapCut"],
+    role: "Motion Designer",
+    date: "2026"
+  },
+  {
+    title: "Smeals Burger — Promotional Design",
+    category: "Graphic Design",
+    description: "A promotional burger flyer designed to showcase a delicious, mouth-watering burger through bold visuals, appetizing presentation, and a strong promotional message. The design focuses on attracting attention and encouraging customers to order.",
+    thumbnail: "assets/projects/Burger.png",
+  image: "assets/projects/Burger.png",
+  video: null,
+    link: null,
+    tools: ["Canva"],
+    role: "Graphic Designer",
+    date: "2025"
+  },
+  {
+    title: "Revolut - Motion Ad Concept",
+    category: "Motion Graphics",
+    description: "A promotional video concept for Revolut showcasing seamless digital banking, fast transactions, and smart financial tools through sleek motion graphics, dynamic visuals, and smooth transitions. ",
+    thumbnail: "assets/projects/Revolut.png",
+    video: "assets/projects/Revolut.mp4",
+    link: null,
+    tools: ["Alight Motion", "CapCut"],
+    role: "Motion Designer",
+    date: "2026"
+  },
+  {
+    title: "Audiomack — Motion Ad Concept",
+    category: "Motion Graphics",
+    description: "A high-energy motion graphics piece for Audiomack, combining bold visuals, smooth animation, and music-inspired transitions to capture the energy of discovering and enjoying music.",
+    thumbnail: "assets/projects/Audiomack.png",
+    video: "assets/projects/Audiomack.mp4",
+    link: null,
+    tools: ["Alight Motion", "CapCut"],
+    role: "Motion Designer",
+    date: "2025"
+  },
+  {
+    title: "TeenThoughts Conference",
+    category: "Graphic Design",
+    description: "An impactful teens conference designed to inspire better thinking, stronger character, purposeful living, and positive choices. ",
+    thumbnail: "assets/projects/Conference.png",
+    image: "assets/projects/Conference.png",
+    video: null,
+    link: null,
+    tools: ["Canva"],
+    role: "Graphic Designer",
+    date: "2025"
+  },
+  {
+    title: "Footwear Promotional Flyer",
+    category: "Graphic Design",
+    description: "A clean and eye-catching promotional flyer designed to showcase a stylish shoe, highlighting its key features and creating a strong visual appeal for potential buyers.",
+    thumbnail: "assets/projects/Shoe.png",
+    image: "assets/projects/Shoe.png",
+    video: null,
+    link: null,
+    tools: ["Canva"],
+    role: "Graphic Designer",
+    date: "2025"
+  },
+  {
+    title: "Creative Services Promotional Video",
+    category: "Motion Graphics",
+    description: "A dynamic promotional motion graphic designed to showcase creative services such as motion graphics, video editing, and graphic design through engaging visuals, smooth transitions, and bold typography.",
+    thumbnail: "assets/projects/Brand_id.png",
+    video: "assets/projects/Brand_id.mp4",
+    link: null,
+    tools: ["Alight Motion", "CapCut"],
+    role: "Motion Designer",
+    date: "2025"
+  }
+];
+
+/* ---------- storage keys ---------- */
+const LOCAL_KEY = "daniel_portfolio_local_projects";
+
+function getLocalProjects(){
+  try{
+    const raw = localStorage.getItem(LOCAL_KEY);
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){ return []; }
+}
+function setLocalProjects(list){
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(list));
+}
+
+/* All projects visible on the page = shipped PROJECTS + anything
+   saved locally through the Admin panel (marked so we can flag it). */
+function getAllProjects(){
+  const local = getLocalProjects().map(p => Object.assign({}, p, { _local:true }));
+  return PROJECTS.concat(local);
+}
+
+/* ============================================================
+   RENDER PROJECT GRID
+   ============================================================ */
+const workGrid = document.getElementById('workGrid');
+const workEmpty = document.getElementById('workEmpty');
+let currentFilter = 'All';
+
+const svgArrow = '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M5 19L19 5M19 5H8M19 5V16"/></svg>';
+const svgPlay = '<svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8V4z"/></svg>';
+
+function categoryInitial(cat){
+  if(cat === 'Motion Graphics') return 'MG';
+  if(cat === 'Video Editing') return 'VE';
+  return 'GD';
+}
+
+function renderGrid(){
+  const all = getAllProjects();
+  const filtered = currentFilter === 'All' ? all : all.filter(p => p.category === currentFilter);
+
+  workGrid.innerHTML = '';
+
+  if(filtered.length === 0){
+    workEmpty.style.display = 'block';
+    workGrid.appendChild(workEmpty);
+    return;
+  }
+  workEmpty.style.display = 'none';
+
+  filtered.forEach((p, i) => {
+    const card = document.createElement('article');
+    card.className = 'project-card';
+    card.tabIndex = 0;
+    card.setAttribute('role','button');
+    card.setAttribute('aria-label', 'Open project: ' + p.title);
+
+    card.innerHTML = `
+      <div class="thumb-wrap">
+        <img src="${p.thumbnail}" alt="${p.title} thumbnail" loading="lazy"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="thumb-fallback" style="display:none; background:linear-gradient(135deg, rgba(186,255,43,0.14), rgba(10,10,10,0));">${p.title}</div>
+        ${p.video ? `<span class="play-badge">${svgPlay}</span>` : ''}
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="card-title">${p.title}</div>
+          <div class="card-meta">${p.category} · ${categoryInitial(p.category)}${p._local ? ' · local draft' : ''}</div>
+        </div>
+        <span class="card-arrow">${svgArrow}</span>
+      </div>
+    `;
+
+    card.addEventListener('click', () => openModal(p));
+    card.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openModal(p); }
+    });
+
+    workGrid.appendChild(card);
+  });
+
+  // staggered reveal on the current grid
+  requestAnimationFrame(() => {
+    const cards = workGrid.querySelectorAll('.project-card');
+    cards.forEach((c, i) => setTimeout(() => c.classList.add('in'), i * 60));
+  });
+}
+
+/* ---------- filters ---------- */
+document.getElementById('filterBar').addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-btn');
+  if(!btn) return;
+  currentFilter = btn.dataset.filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+  renderGrid();
+});
+
+/* ============================================================
+   PROJECT MODAL
+   ============================================================ */
+const modal = document.getElementById('projectModal');
+const modalMedia = document.getElementById('modalMedia');
+const modalClose = document.getElementById('modalClose');
+let lastFocused = null;
+
+function openModal(p){
+  lastFocused = document.activeElement;
+
+  document.getElementById('modalCat').textContent = p.category;
+  document.getElementById('modalTitle').textContent = p.title;
+  document.getElementById('modalDesc').textContent = p.description;
+  document.getElementById('modalRole').textContent = p.role || '—';
+  document.getElementById('modalDate').textContent = p.date || '—';
+
+  const toolsWrap = document.getElementById('modalTools');
+  toolsWrap.innerHTML = '';
+  (p.tools || []).forEach(t => {
+    const span = document.createElement('span');
+    span.className = 'tool-tag';
+    span.textContent = t;
+    toolsWrap.appendChild(span);
+  });
+
+  const linkEl = document.getElementById('modalLink');
+  if(p.link){ linkEl.href = p.link; linkEl.style.display = 'inline-flex'; }
+  else { linkEl.style.display = 'none'; }
+
+  // media: prefer video, fall back to image, fall back to styled block
+  modalMedia.innerHTML = `<button class="modal-close" id="modalClose" aria-label="Close project details">✕</button>`;
+  if(p.video){
+    const v = document.createElement('video');
+    v.src = p.video; v.controls = true; v.poster = p.thumbnail || '';
+    v.addEventListener('error', () => {
+      v.remove();
+      showModalFallback(p);
+    });
+    modalMedia.appendChild(v);
+  } else if (p.image) {
+  const img = document.createElement('img');
+  img.src = p.image;
+  img.alt = p.title;
+  
+  img.addEventListener('click', () => {
+    window.open(p.image, '_blank');
+  });
+  
+  modalMedia.appendChild(img);
+  
+} else if (p.thumbnail) {
+  const img = document.createElement('img');
+  img.src = p.thumbnail;
+  img.alt = p.title;
+  
+  img.addEventListener('click', () => {
+    window.open(p.thumbnail, '_blank');
+  });
+  
+  modalMedia.appendChild(img);
+  
+} else {
+    showModalFallback(p);
+  }
+
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('modalClose').focus();
+}
+
+function showModalFallback(p){
+  const div = document.createElement('div');
+  div.className = 'thumb-fallback';
+  div.style.position = 'absolute'; div.style.inset = '0';
+  div.style.background = 'linear-gradient(135deg, rgba(186,255,43,0.14), rgba(10,10,10,0))';
+  div.textContent = p.title;
+  modalMedia.appendChild(div);
+}
+
+function closeModal(){
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+  if(lastFocused) lastFocused.focus();
+}
+
+modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){
+    if(modal.classList.contains('open')) closeModal();
+    if(adminOverlay.classList.contains('open')) closeAdmin();
+  }
+});
+
+/* ============================================================
+   MOBILE NAV
+   ============================================================ */
+const navToggle = document.getElementById('navToggle');
+const primaryNav = document.getElementById('primaryNav');
+
+function closeMobileMenu() {
+  primaryNav.classList.remove('open');
+  navToggle.setAttribute('aria-expanded', 'false');
+  navToggle.setAttribute('aria-label', 'Open menu');
+}
+
+function openMobileMenu() {
+  primaryNav.classList.add('open');
+  navToggle.setAttribute('aria-expanded', 'true');
+  navToggle.setAttribute('aria-label', 'Close menu');
+}
+
+navToggle.addEventListener('click', function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  if (primaryNav.classList.contains('open')) {
+    closeMobileMenu();
+  } else {
+    openMobileMenu();
+  }
+});
+
+primaryNav.querySelectorAll('a').forEach(function(link) {
+  link.addEventListener('click', function() {
+    closeMobileMenu();
+  });
+});
+primaryNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  primaryNav.classList.remove('open');
+  navToggle.setAttribute('aria-expanded', 'false');
+  navToggle.setAttribute('aria-label', 'Open menu');
+}));
+
+/* ============================================================
+   HERO ENTRANCE (single orchestrated sequence on load)
+   ============================================================ */
+window.addEventListener('load', () => {
+  document.querySelectorAll('.hero h1 .line span').forEach((el, i) => {
+    el.style.transition = 'transform .9s cubic-bezier(.16,.84,.32,1)';
+    setTimeout(() => el.style.transform = 'translateY(0)', 120);
+  });
+  document.querySelectorAll('.hero [data-anim]').forEach((el, i) => {
+    setTimeout(() => { el.style.animation = 'rise .8s cubic-bezier(.16,.84,.32,1) forwards'; }, 400 + i * 130);
+  });
+});
+
+/* ============================================================
+   SCROLL REVEAL for section headers (subtle, not per-card)
+   ============================================================ */
+const revealTargets = document.querySelectorAll('.section-head, .about-grid, .contact-inner, .process-track');
+revealTargets.forEach(el => { el.style.opacity = 0; el.style.transform = 'translateY(18px)'; el.style.transition = 'opacity .7s var(--ease), transform .7s var(--ease)'; });
+
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.style.opacity = 1;
+      entry.target.style.transform = 'translateY(0)';
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+revealTargets.forEach(el => io.observe(el));
+
+/* ============================================================
+   ADMIN PANEL — local project manager
+   ============================================================ */
+const adminOverlay = document.getElementById('adminOverlay');
+const openAdminBtn = document.getElementById('openAdmin');
+const adminCloseBtn = document.getElementById('adminClose');
+const adminForm = document.getElementById('adminForm');
+const adminList = document.getElementById('adminList');
+const copyBox = document.getElementById('copyBox');
+const copyArea = document.getElementById('copyArea');
+
+function openAdmin(){
+  adminOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderAdminList();
+  document.getElementById('f-title').focus();
+}
+function closeAdmin(){
+  adminOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+openAdminBtn.addEventListener('click', openAdmin);
+adminCloseBtn.addEventListener('click', closeAdmin);
+adminOverlay.addEventListener('click', (e) => { if(e.target === adminOverlay) closeAdmin(); });
+
+adminForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const project = {
+    title: document.getElementById('f-title').value.trim(),
+    category: document.getElementById('f-category').value,
+    description: document.getElementById('f-desc').value.trim(),
+    thumbnail: document.getElementById('f-thumb').value.trim() || 'assets/projects/placeholder.jpg',
+    video: document.getElementById('f-video').value.trim() || null,
+    role: document.getElementById('f-role').value.trim(),
+    date: document.getElementById('f-date').value.trim(),
+    tools: document.getElementById('f-tools').value.split(',').map(t => t.trim()).filter(Boolean),
+    link: document.getElementById('f-link').value.trim() || null
+  };
+  const list = getLocalProjects();
+  list.push(project);
+  setLocalProjects(list);
+  adminForm.reset();
+  renderAdminList();
+  renderGrid();
+});
+
+document.getElementById('clearForm').addEventListener('click', () => adminForm.reset());
+
+function renderAdminList(){
+  const list = getLocalProjects();
+  adminList.innerHTML = '';
+  if(list.length === 0){
+    adminList.innerHTML = '<p class="admin-empty">No local drafts yet — projects you save here will appear on the live grid immediately, and listed below so you can copy them into the code.</p>';
+    copyBox.style.display = 'none';
+    return;
+  }
+  list.forEach((p, i) => {
+    const row = document.createElement('div');
+    row.className = 'admin-item';
+    row.innerHTML = `
+      <span>${p.title} <span style="color:var(--grey)">— ${p.category}</span></span>
+      <span class="admin-item-actions">
+        <button type="button" data-i="${i}" class="copy-one">Copy as code</button>
+        <button type="button" data-i="${i}" class="remove-one">Remove</button>
+      </span>
+    `;
+    adminList.appendChild(row);
+  });
+
+  adminList.querySelectorAll('.remove-one').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const list = getLocalProjects();
+      list.splice(Number(btn.dataset.i), 1);
+      setLocalProjects(list);
+      renderAdminList();
+      renderGrid();
+    });
+  });
+  adminList.querySelectorAll('.copy-one').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const list = getLocalProjects();
+      const p = list[Number(btn.dataset.i)];
+      copyBox.style.display = 'block';
+      copyArea.value = formatAsCode(p);
+      copyArea.select();
+      try{ document.execCommand('copy'); }catch(e){}
+    });
+  });
+}
+
+function formatAsCode(p){
+  return `  {
+    title: ${JSON.stringify(p.title)},
+    category: ${JSON.stringify(p.category)},
+    description: ${JSON.stringify(p.description)},
+    thumbnail: ${JSON.stringify(p.thumbnail)},
+    video: ${p.video ? JSON.stringify(p.video) : 'null'},
+    link: ${p.link ? JSON.stringify(p.link) : 'null'},
+    tools: ${JSON.stringify(p.tools)},
+    role: ${JSON.stringify(p.role)},
+    date: ${JSON.stringify(p.date)}
+  },`;
+}
+
+/* ---------- init ---------- */
+document.getElementById('year').textContent = new Date().getFullYear();
+renderGrid();
+</script>
+</body>
+</html>
